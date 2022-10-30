@@ -33,8 +33,8 @@
 
     </style>
     <div id="app">
-      <input @keydown.enter="addTodo" @keypress="setCanMessageSubmit" type="text" v-model="name"
-        placeholder="hogehoge" />
+      <input @keydown.enter="addTodo" @compositionstart="isComposing = true" @compositionend="isComposing = false"
+        type="text" v-model="name" placeholder="hogehoge" />
       <button @click="addTodo" :disabled="!name.length">ADD</button>
       <p>残タスク数：{{ unfinishedTodoCount }}</p>
       <p>終了率：{{ finishedRate }}%</p>
@@ -72,28 +72,12 @@
         data: {
           name: "",
           todos: [{ name: "hoge", done: false }],
-          canMessageSubmit: false
-        },
-        beforeCreate() {
-          console.log("beforeCreate!");
-        },
-        created() {
-          console.log("created!");
-        },
-        beforeMount() {
-          console.log("beforeMount!");
-        },
-        mounted() {
-          console.log("mounted!");
+          isComposing: false
         },
         methods: {
-          setCanMessageSubmit() {
-            this.canMessageSubmit = true
-          },
-
           // やることを追加するメソッド
           addTodo() {
-            if (!this.name || !this.canMessageSubmit) {
+            if (!this.name || this.isComposing) {
               return
             }
             this.todos.push({ name: this.name, done: false });
@@ -117,25 +101,6 @@
               .length;
             return (finishedTodoCount / this.todos.length) * 100;
           }
-        },
-        watch: {
-          // nameを監視
-          name(newVal, oldVal) {
-            console.log(`newVal: ${newVal}`);
-            console.log(`oldVal: ${oldVal}`);
-          }
-        },
-        beforeUpdate() {
-          console.log("beforeUpdate!");
-        },
-        updated() {
-          console.log("updated!");
-        },
-        beforeDestroy() {
-          console.log("beforeDestroy!");
-        },
-        destroyed() {
-          console.log("destroyed!");
         }
       });
     </script>
